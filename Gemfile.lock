@@ -7,9 +7,12 @@ GEM
       uuidtools (~> 2.1)
     json (1.8.0)
     nokogiri (1.5.9)
+    puma (2.0.1)
+      rack (>= 1.1, < 2.0)
     rack (1.5.2)
     rack-contrib (1.1.0)
       rack (>= 0.9.1)
+    rmagick (2.13.2)
     uuidtools (2.1.4)
 
 PLATFORMS
@@ -17,4 +20,6 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk
+  puma
   rack-contrib
+  rmagick
