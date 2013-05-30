@@ -1,29 +1,29 @@
-require 'securerandom'
 
 class Signs
   def call(env)
     request = Rack::Request.new(env)
     key = remove_starting_slash request.path
-    return not_found unless image_at(key).exists?
-    type = request.params["t"]
+    return not_found unless bucket.objects[key].exists?
+
+    image = image_at(key)
+    width = request.params["w"]
+
+    image_content = (width ? resize(image, width) : image).to_blob
+
+    type = (image.inspect.split(' ').compact.map(&:downcase) & ['jpg', 'jpeg', 'png']).first
 
     headers = {
       "Content-Type" => "image/#{type}",
       "Cache-Control" => "public, max-age=2592000",
       "Content-Disposition" => "inline"
     }
-    image = image_at(key)
-    width = request.params["w"]
-
-    image_content = width ? resize(image, width) : image.read
 
     [200, headers, [image_content]]
   end
 
   private
-    def resize(image_data, width)
-      image = Magick::Image.from_blob image_data.read
-      image.first.change_geometry!(width){|cols, rows, img| img.resize! cols, rows}.to_blob
+    def resize(image, width)
+      image.first.change_geometry!(width){|cols, rows, img| img.resize! cols, rows}
     end
 
     def remove_starting_slash path
@@ -31,7 +31,7 @@ class Signs
     end
 
     def image_at key
-      bucket.objects[key]
+      Magick::Image.from_blob(bucket.objects[key].read)
     end
 
     def not_found
