@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (1.10.0)
+    aws-sdk (1.11.0)
       json (~> 1.4)
       nokogiri (>= 1.4.4)
       uuidtools (~> 2.1)
@@ -10,6 +10,8 @@ GEM
     puma (2.0.1)
       rack (>= 1.1, < 2.0)
     rack (1.5.2)
+    rack-cache (1.2)
+      rack (>= 0.4)
     rack-contrib (1.1.0)
       rack (>= 0.9.1)
     rmagick (2.13.2)
@@ -21,5 +23,6 @@ PLATFORMS
 DEPENDENCIES
   aws-sdk
   puma
+  rack-cache
   rack-contrib
   rmagick
