@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class Signs
   def call(env)
     request = Rack::Request.new(env)
