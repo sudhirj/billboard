@@ -21,12 +21,9 @@ class Signs
   end
 
   private
-    def resize(image, width)
-      tempfile = Tempfile.new(SecureRandom.hex)
-      tempfile.binmode
-      tempfile.write(image.read)
-      tempfile.close
-      Magick::Image.read(tempfile.open).first.change_geometry!(width){|cols, rows, img| img.resize! cols, rows}.to_blob
+    def resize(image_data, width)
+      image = Magick::Image.from_blob image_data.read
+      image.first.change_geometry!(width){|cols, rows, img| img.resize! cols, rows}.to_blob
     end
 
     def remove_starting_slash path
@@ -46,14 +43,14 @@ class Signs
     end
 
     def bucket
-      bucket_name = ENV['BUCKET'] || config["bucket"]
+      bucket_name = ENV['BUCKET'] || config["BUCKET"]
       s3.buckets[bucket_name]
     end
 
     def s3
       @s3 ||= AWS::S3.new({
-                            :access_key_id => ENV['ACCESS_KEY_ID'] || config["access_key_id"],
-                            :secret_access_key => ENV['SECRET_ACCESS_KEY'] || config["secret_access_key"]
+                            :access_key_id => ENV['ACCESS_KEY_ID'] || config["ACCESS_KEY_ID"],
+                            :secret_access_key => ENV['SECRET_ACCESS_KEY'] || config["SECRET_ACCESS_KEY"]
       })
     end
 end
